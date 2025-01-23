@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!--This is a cart module which is used to filter cart objects
+it is checking whether givan product is already present in cart or not-->
+{% load cart %}
+       
+  {% block title %}
+  <title>E-shop</title>
+  {% endblock %}
+
+
+
+  {% block content %}
+       
+
+        <centre><h1 style="color: aliceblue;">Products data</h1></centre>
+
+<!-------------------------------product data display  ----------------------------------------->
+<div class="container-fluid mt-3">
+    <div class="row">
+    <!-- filtered product data  according to catagories-->
+      <div class="col-lg-2 mx-auto">
+        <div class="list-group">
+          <h1 style="color:chartreuse">Catagory:</h1>
+          <a href="/" class="list-group-item list-group-item-action">All Products</a>
+
+          {% for catagory in catagories %}
+          <a href="/?catagory={{catagory.id}}" class="list-group-item list-group-item-action">{{catagory.name}}</a>
+
+          {% endfor %}
+          
+        </div>
+
+      </div>
+    <!-- Filtered data end  -->
+
+      <!-- All Product Data   -->
+      <div class="products col-lg-10 mx-auto">
+        <div class="row mx-auto">
+          {% for product in product_data %}
+          
+              <div class="card mx-auto mb-3" id="{product.id}" style="width: 18rem;">
+                  <img class="card-img-top" src="{{product.image.url}}" alt="Card image cap">
+                  <h6>{{product.image.url}}</h6>
+                  <div class="card-body">
+                    <h5 class="card-title">{{product.name}}</h5>
+                    <p class="card-text">{{product.description}}</p>
+                    <p class="card-text"><b>{{products.price}}</b></p>
+                      <!-- {{ product | is_in_cart:request.session.cart }} -->
+
+
+          <div class="card-footer p-0">
+            {% if product|is_in_cart:request.session.cart %}
+            <div class="row no-gutters ">
+              <!--this form is for decrease quantity of product in cart -->
+              <form  action="/" method="post" class="col-2">
+                {% csrf_token %}
+                <input type="text"  hidden value="{{product.id}}" name="product"/>
+                <input type="text" hidden  name="remove" value="True"/>
+                <input type="submit" value=" - " class="btn btn-block btn-secondary"/>
+              </form>
+              <!-- form end -->
+              <div class="text-center col">{{product|cart_quantity:request.session.cart}} in Cart</div>
+              <!-- this form is for increase quantity of product in cart -->
+              <form  action="/" method="post" class="col-2">
+                {% csrf_token %}
+                <input type="text"  hidden value="{{product.id}}" name="product">
+                <input type="submit" value=" + " class="btn btn-block btn-secondary"/>
+              </form>
+              <!-- form ends -->
+            </div>
+            {% else %}
+             <form action="/#{{product.id}}" method="post" class="btn-block">
+                          {% csrf_token %}
+                          <input type="text"  hidden value="{{product.id}}" name="product">
+                          <input  type="submit" class="btn btn-sm border btn-light btn-block" value="ADD To CART">
+                      </form>
+            {% endif %}
+
+                  
+                   
+
+                  </div>
+                
+                </div>
+              </div>
+          
+          {% endfor %}
+      </div>
+
+
+      </div>
+    </div>
+    </div>
+
+    
+
+  
+
+
+
+    {% endblock %}
+
+    
+       
